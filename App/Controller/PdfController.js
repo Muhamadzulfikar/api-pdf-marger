@@ -1,4 +1,5 @@
 const merge = require('easy-pdf-merge');
+const fs = require('fs');
 const PdfService = require('../Service/PdfService');
 
 require('dotenv').config();
@@ -15,13 +16,33 @@ module.exports = {
         if (err) {
           throw err;
         } else {
-          const testing = await PdfService.uploadToS3(mergedPdfPath, filePath, name);
-          res.status(200).json({
+          const pdfPath = await PdfService.uploadToS3(mergedPdfPath, filePath, name);
+          fs.unlinkSync(mergedPdfPath);
+          res.status(201).json({
             message: 'Success',
-            data: testing,
+            data: pdfPath.split('/')[1],
           });
         }
       }));
+    } catch (error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        data: error.message,
+      });
+    }
+  },
+
+  async download(req, res) {
+    try {
+      const { path } = req.params;
+      const file = await PdfService.downloadFromS3(path);
+      res.download(file, path, (err) => {
+        if (err) {
+          throw err;
+        }
+
+        fs.unlinkSync(file);
+      });
     } catch (error) {
       res.status(500).json({
         message: 'Internal Server Error',

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Upload File</title>
+</head>
+<body>
+
+  <h1>Form Upload File</h1>
+
+  <form id="uploadForm" method="post" enctype="multipart/form-data">
+    <label for="textInput">Input Text:</label>
+    <input type="text" id="textInput" name="name" required>
+    
+    <br>
+
+    <label for="fileInput">Pilih File:</label>
+    <input type="file" id="fileInput" name="files" accept=".txt, .pdf, .docx" required>
+
+    <br>
+
+    <button type="button" onclick="submitForm()">Kirim</button>
+  </form>
+
+  <script>
+    async function submitForm() {
+        try {
+             // Dapatkan elemen formulir
+      var form = document.getElementById('uploadForm');
+
+// Dapatkan data formulir
+var formData = new FormData(form);
+
+// Ganti URL API dengan URL yang sesuai
+var apiUrl = 'http://localhost:8000/v1/uploads/pdf';
+
+// Kirim data ke API menggunakan metode POST
+await fetch(apiUrl, {
+  method: 'POST',
+  body: formData
+});
+        } catch (error) {
+            console.error(error);
+        }
+    }
+  </script>
+
+</body>
+</html>

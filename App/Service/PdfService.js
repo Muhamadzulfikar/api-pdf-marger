@@ -51,18 +51,18 @@ module.exports = {
           throw err;
         } else {
           localFilePaths.forEach((path) => fs.unlinkSync(path));
-          resolve(data);
+          resolve(data.Key);
         }
       });
     });
   },
 
   // eslint-disable-next-line consistent-return
-  async downloadFromS3([key]) {
+  async downloadFromS3(key) {
     try {
       const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: key,
+        Key: `merge-pdf/${key}`,
       };
 
       return new Promise((resolve) => {
